@@ -1,0 +1,21 @@
+name: iOS compile check
+# Compiles the app and the monitor extension on a free GitHub macOS runner
+# (no Mac or signing needed). Run it from the Actions tab after each change.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        run: xcodegen generate
+      - name: Build for iOS Simulator (unsigned)
+        run: |
+          xcodebuild -project FocusLock.xcodeproj -scheme FocusLock \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO build | tail -n 60

@@ -1,0 +1,97 @@
+name: FocusLock
+options:
+  bundleIdPrefix: com.alex
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Put your 10-character Apple Team ID here (needed for device builds):
+    DEVELOPMENT_TEAM: ""
+targets:
+  FocusLock:
+    type: application
+    platform: iOS
+    sources:
+      - FocusLock
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.alex.focuslock
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+    info:
+      path: FocusLock/Info.plist
+      properties:
+        CFBundleDisplayName: FocusLock
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSUserActivityTypes: []
+    entitlements:
+      path: FocusLock/FocusLock.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups:
+          - group.com.alex.focuslock
+    dependencies:
+      - target: FocusLockMonitor
+        embed: true
+      - target: FocusLockShield
+        embed: true
+  FocusLockMonitor:
+    type: app-extension
+    platform: iOS
+    sources:
+      - FocusLockMonitor
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.alex.focuslock.monitor
+    info:
+      path: FocusLockMonitor/Info.plist
+      properties:
+        CFBundleDisplayName: FocusLock Monitor
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.deviceactivity.monitor-extension
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).FocusLockMonitor
+    entitlements:
+      path: FocusLockMonitor/FocusLockMonitor.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+        com.apple.security.application-groups:
+          - group.com.alex.focuslock
+  FocusLockShield:
+    type: app-extension
+    platform: iOS
+    sources:
+      - FocusLockShield
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.alex.focuslock.shield
+    info:
+      path: FocusLockShield/Info.plist
+      properties:
+        CFBundleDisplayName: FocusLock Shield
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.ManagedSettingsUI.shield-configuration-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).FocusLockShield
+    entitlements:
+      path: FocusLockShield/FocusLockShield.entitlements
+      properties:
+        com.apple.developer.family-controls: true
+schemes:
+  FocusLock:
+    build:
+      targets:
+        FocusLock: all
+    run:
+      config: Debug
